@@ -1,3 +1,5 @@
+THIS IS A SIMPLE IMAGE ENCRYPTION TOOL
+
 REQUIREMENT
 
 Python: Make sure you have Python installed. You can download it from www.python.org.
