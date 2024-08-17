@@ -1,0 +1,55 @@
+from PIL import Image  
+import numpy as np  
+
+def encrypt(image_path, key, output_path):  
+    # Open the image  
+    img = Image.open(image_path)  
+    img_array = np.array(img)  
+  
+    # Encrypting the image by performing pixel manipulation  
+    encrypted_array = img_array.copy()  
+    
+    # Perform pixel manipulation: Add key to each pixel value  
+    encrypted_array = (encrypted_array + key) % 256  # Ensure it wraps around at 256  
+
+    # Swapping each pixel's row with the next row  
+    for i in range(0, encrypted_array.shape[0]-1, 2):  
+        encrypted_array[i], encrypted_array[i + 1] = encrypted_array[i + 1], encrypted_array[i]  
+    
+    # Save the encrypted image  
+    encrypted_img = Image.fromarray(encrypted_array.astype('uint8'))  
+    encrypted_img.save(output_path)  
+    print(f"Image encrypted and saved as '{output_path}'")  
+
+def decrypt(image_path, key, output_path):  
+    # Open the image  
+    img = Image.open(image_path)  
+    img_array = np.array(img)  
+
+    # Decrypting the image by reversing the pixel manipulation  
+    decrypted_array = img_array.copy()  
+
+    # Swapping back the pixels to their original positions  
+    for i in range(0, decrypted_array.shape[0]-1, 2):  
+        decrypted_array[i], decrypted_array[i + 1] = decrypted_array[i + 1], decrypted_array[i]  
+      
+    # Perform pixel manipulation: Subtract key from each pixel value  
+    decrypted_array = (decrypted_array - key) % 256  # Ensure it wraps around at 256  
+
+    # Save the decrypted image  
+    decrypted_img = Image.fromarray(decrypted_array.astype('uint8'))  
+    decrypted_img.save(output_path)  
+    print(f"Image decrypted and saved as '{output_path}'")  
+
+if __name__ == "__main__":  
+    # Example usage  
+    image_path = 'input_image.png'  # Path to your input image  
+    output_encrypted_path = 'encrypted_image.png'  # Path to save the encrypted image  
+    output_decrypted_path = 'decrypted_image.png'  # Path to save the decrypted image  
+    key = 123  # Example key for encryption  
+    
+    # Encrypt the image  
+    encrypt(image_path, key, output_encrypted_path)  
+
+    # Decrypt the image  
+    decrypt(output_encrypted_path, key, output_decrypted_path)
